@@ -1,7 +1,7 @@
-# mcp-jira-service-desk
+# jira-service-desk-mcp
 
-[![PyPI](https://img.shields.io/pypi/v/mcp-jira-service-desk)](https://pypi.org/project/mcp-jira-service-desk/)
-[![Python](https://img.shields.io/pypi/pyversions/mcp-jira-service-desk)](https://pypi.org/project/mcp-jira-service-desk/)
+[![PyPI](https://img.shields.io/pypi/v/jira-service-desk-mcp)](https://pypi.org/project/jira-service-desk-mcp/)
+[![Python](https://img.shields.io/pypi/pyversions/jira-service-desk-mcp)](https://pypi.org/project/jira-service-desk-mcp/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 MCP (Model Context Protocol) server for **Jira Service Management** (formerly Jira Service Desk).  
@@ -33,13 +33,13 @@ Built on top of [`atlassian-python-api`](https://atlassian-python-api.readthedoc
 ### Install from PyPI
 
 ```bash
-pip install mcp-jira-service-desk
+pip install jira-service-desk-mcp
 ```
 
 Or with `uv`:
 
 ```bash
-uv pip install mcp-jira-service-desk
+uv pip install jira-service-desk-mcp
 ```
 
 Or install from source:
@@ -64,7 +64,7 @@ JIRA_PERSONAL_TOKEN=<base64-encoded username:token>
 ```
 
 Use a base64-encoded `username:token` string when you want one MCP config style
-that works across both `mcp-atlassian` and `mcp-jira-service-desk` for
+that works across both `mcp-atlassian` and `jira-service-desk-mcp` for
 Atlassian Cloud. On non-Cloud/self-hosted Jira instances, `JIRA_PERSONAL_TOKEN`
 now defaults to Bearer/PAT handling to avoid misclassifying base64-looking PATs.
 If you intentionally need basic auth there, set `JIRA_PERSONAL_TOKEN_MODE=basic`.
@@ -107,13 +107,13 @@ JIRA_PERSONAL_TOKEN_MODE=basic
 **stdio** (default — for Claude Code, Claude Desktop, Cursor, etc.):
 
 ```bash
-mcp-jira-service-desk
+jira-service-desk-mcp
 ```
 
 **SSE** (for remote/web clients):
 
 ```bash
-mcp-jira-service-desk --transport sse --port 8000
+jira-service-desk-mcp --transport sse --port 8000
 ```
 
 ---
@@ -123,7 +123,7 @@ mcp-jira-service-desk --transport sse --port 8000
 The fastest way to connect JSM to Claude Code:
 
 ```bash
-claude mcp add jira-service-desk -- mcp-jira-service-desk
+claude mcp add jira-service-desk -- jira-service-desk-mcp
 ```
 
 With environment variables inline:
@@ -132,7 +132,7 @@ With environment variables inline:
 claude mcp add jira-service-desk \
   -e JIRA_URL=https://jira.your-company.com \
   -e JIRA_PERSONAL_TOKEN=<base64-encoded username:token> \
-  -- uvx mcp-jira-service-desk
+  -- uvx jira-service-desk-mcp
 ```
 
 To scope the server to your project only:
@@ -141,7 +141,7 @@ To scope the server to your project only:
 claude mcp add --scope project jira-service-desk \
   -e JIRA_URL=https://jira.your-company.com \
   -e JIRA_PERSONAL_TOKEN=<base64-encoded username:token> \
-  -- uvx mcp-jira-service-desk
+  -- uvx jira-service-desk-mcp
 ```
 
 Verify it works:
@@ -170,7 +170,7 @@ Add the same shape to `~/.claude.json`, project-level `.mcp.json`,
     "jira-service-desk": {
       "type": "stdio",
       "command": "uvx",
-      "args": ["mcp-jira-service-desk"],
+      "args": ["jira-service-desk-mcp"],
       "env": {
         "JIRA_URL": "https://jira.your-company.com",
         "JIRA_PERSONAL_TOKEN": "<base64-encoded username:token>"
@@ -181,7 +181,7 @@ Add the same shape to `~/.claude.json`, project-level `.mcp.json`,
 ```
 
 This mirrors the `mcp-atlassian` configuration style for Atlassian Cloud while
-still allowing `mcp-jira-service-desk` to distinguish Cloud basic-auth tokens
+still allowing `jira-service-desk-mcp` to distinguish Cloud basic-auth tokens
 from non-Cloud Bearer/PAT tokens.
 
 ---
@@ -286,8 +286,8 @@ src/mcp_jira_service_desk/
 ## Development
 
 ```bash
-git clone https://github.com/CzSadykov/mcp-jirasm.git
-cd mcp-jirasm
+git clone https://github.com/CzSadykov/jira-service-desk-mcp.git
+cd jira-service-desk-mcp
 pip install -e ".[dev]"
 pytest
 ```

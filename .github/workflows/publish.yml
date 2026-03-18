@@ -1,4 +1,4 @@
-name: Publish to PyPI
+name: Publish jira-service-desk-mcp to PyPI
 
 on:
   release:

@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "mcp-jira-service-desk"
+name = "jira-service-desk-mcp"
 version = "0.1.0"
 description = "MCP server for Jira Service Management — connect Claude Code, Claude Desktop, Cursor and other AI assistants to JSM"
 readme = "README.md"
@@ -45,12 +45,12 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/CzSadykov/mcp-jirasm"
-Repository = "https://github.com/CzSadykov/mcp-jirasm"
-Issues = "https://github.com/CzSadykov/mcp-jirasm/issues"
+Homepage = "https://github.com/CzSadykov/jira-service-desk-mcp"
+Repository = "https://github.com/CzSadykov/jira-service-desk-mcp"
+Issues = "https://github.com/CzSadykov/jira-service-desk-mcp/issues"
 
 [project.scripts]
-mcp-jira-service-desk = "mcp_jira_service_desk:main"
+jira-service-desk-mcp = "mcp_jira_service_desk:main"
 
 [project.optional-dependencies]
 dev = [
