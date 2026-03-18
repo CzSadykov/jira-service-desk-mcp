@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from typing import Any
 
 
@@ -100,6 +101,126 @@ def format_customer_request_list(requests: list[dict[str, Any]]) -> str:
     if not requests:
         return "No requests found."
     return "\n\n---\n\n".join(format_customer_request(r) for r in requests)
+
+
+def _compact_json(value: Any) -> str:
+    return json.dumps(value, separators=(",", ":"), default=str)
+
+
+def _render_queue_field_value(value: Any, fallback_to_json: bool = True) -> str | None:
+    if value is None:
+        return None
+    if isinstance(value, str):
+        return value if value else None
+    if isinstance(value, (bool, int, float)):
+        return str(value)
+    if isinstance(value, dict):
+        for key in ("name", "displayName", "value"):
+            rendered = _render_queue_field_value(value.get(key), fallback_to_json=False)
+            if rendered is not None:
+                return rendered
+        return _compact_json(value) if fallback_to_json else None
+    if isinstance(value, list):
+        if not value:
+            return None
+        rendered_items: list[str] = []
+        for item in value:
+            rendered = _render_queue_field_value(item, fallback_to_json=False)
+            if rendered is None:
+                return _compact_json(value) if fallback_to_json else None
+            rendered_items.append(rendered)
+        return ", ".join(rendered_items)
+    return str(value)
+
+
+def _format_queue_field_label(field_name: str) -> str:
+    if field_name.startswith("customfield_"):
+        return field_name
+    spaced_name = re.sub(r"(?<!^)(?=[A-Z])", " ", field_name.replace("_", " "))
+    return spaced_name.title()
+
+
+def _queue_issue_title(issue: dict[str, Any], fields: dict[str, Any]) -> str:
+    summary = _render_queue_field_value(fields.get("summary"), fallback_to_json=False)
+    if summary is not None:
+        return summary
+
+    for field_name, value in fields.items():
+        if field_name in {"summary", "status", "reporter", "created"}:
+            continue
+        rendered = _render_queue_field_value(value)
+        if rendered is not None:
+            return rendered
+    return ""
+
+
+def format_queue_issue(issue: dict[str, Any]) -> str:
+    fields = issue.get("fields", {})
+    if not isinstance(fields, dict):
+        fields = {}
+
+    issue_key = _render_queue_field_value(issue.get("key"), fallback_to_json=False)
+    if issue_key is None:
+        issue_key = _render_queue_field_value(issue.get("issueKey"), fallback_to_json=False) or "N/A"
+
+    issue_id = _render_queue_field_value(issue.get("id"), fallback_to_json=False)
+    if issue_id is None:
+        issue_id = _render_queue_field_value(issue.get("issueId"), fallback_to_json=False) or "N/A"
+
+    status = (
+        _render_queue_field_value(fields.get("status"), fallback_to_json=False)
+        or _render_queue_field_value(issue.get("currentStatus"), fallback_to_json=False)
+        or "N/A"
+    )
+
+    reporter = fields.get("reporter")
+    if not isinstance(reporter, dict):
+        reporter = issue.get("reporter", {})
+    if not isinstance(reporter, dict):
+        reporter = {}
+    reporter_name = (
+        _render_queue_field_value(reporter.get("displayName"), fallback_to_json=False) or "N/A"
+    )
+    reporter_email = (
+        _render_queue_field_value(reporter.get("emailAddress"), fallback_to_json=False) or "N/A"
+    )
+
+    created = _render_queue_field_value(fields.get("created"), fallback_to_json=False)
+    if created is None:
+        created_date = issue.get("createdDate", {})
+        if isinstance(created_date, dict):
+            created = _render_queue_field_value(created_date.get("friendly"), fallback_to_json=False)
+        else:
+            created = _render_queue_field_value(created_date, fallback_to_json=False)
+    if created is None:
+        created = "N/A"
+
+    title = _queue_issue_title(issue, fields)
+    header_ref = issue_key if issue_key != "N/A" else issue_id
+    lines = [
+        f"## [{header_ref}] {title}".rstrip(),
+        f"- **Issue Key:** {issue_key}",
+        f"- **Issue ID:** {issue_id}",
+        f"- **Status:** {status}",
+        f"- **Reporter:** {reporter_name} ({reporter_email})",
+        f"- **Created:** {created}",
+    ]
+
+    for field_name, value in fields.items():
+        if field_name in {"summary", "status", "reporter", "created"}:
+            continue
+        rendered = _render_queue_field_value(value)
+        if rendered is None:
+            continue
+        lines.append(f"- **{_format_queue_field_label(field_name)}:** {rendered}")
+
+    return "\n".join(lines)
+
+
+def format_queue_issue_list(issues: list[dict[str, Any]]) -> str:
+    if not issues:
+        return "No requests found."
+    return "\n\n---\n\n".join(format_queue_issue(issue) for issue in issues)
 
 
 def format_comment(comment: dict[str, Any]) -> str:

@@ -22,6 +22,8 @@ from mcp_jira_service_desk.formatting import (
     format_participant,
     format_participant_list,
     format_queue,
+    format_queue_issue,
+    format_queue_issue_list,
     format_queue_list,
     format_request_type,
     format_request_type_fields,
@@ -177,6 +179,28 @@ class TestFormatCustomerRequest:
 
     def test_list_empty(self):
         assert format_customer_request_list([]) == "No requests found."
+
+
+class TestFormatQueueIssue:
+
+    def test_issuebean_shape(self, queue_issue_response):
+        result = format_queue_issue(queue_issue_response)
+        assert "X000" in result
+        assert "My keyboard is broken" in result
+        assert "Waiting for support" in result
+        assert "Fred F. User" in result
+        assert "fred@example.com" in result
+        assert "2025-10-07T09:30:00.000+0300" in result
+        assert "N/A" not in result
+
+    def test_adaptive_visible_fields(self, queue_issue_response):
+        result = format_queue_issue(queue_issue_response)
+        assert "High" in result
+        assert "vip, hardware" in result
+        assert "Hardware" in result
+
+    def test_list_empty(self):
+        assert format_queue_issue_list([]) == "No requests found."
 
 
 class TestFormatComment:

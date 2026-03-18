@@ -242,6 +242,16 @@ class TestReadTools:
         assert "No requests" in result
 
     @pytest.mark.asyncio
+    async def test_list_issues_in_queue_issuebean(self, fake_ctx, mock_sd, queue_issue_response):
+        mock_sd.get_issues_in_queue.return_value = {"values": [queue_issue_response]}
+        result = await list_issues_in_queue(fake_ctx, "0", "000")
+        assert "X000" in result
+        assert "My keyboard is broken" in result
+        assert "High" in result
+        assert "vip, hardware" in result
+        assert "N/A" not in result
+
+    @pytest.mark.asyncio
     async def test_get_request_sla(self, fake_ctx, mock_sd):
         mock_sd.get_sla.return_value = {"values": []}
         result = await get_request_sla(fake_ctx, "0")
@@ -249,9 +259,9 @@ class TestReadTools:
 
     @pytest.mark.asyncio
     async def test_get_request_sla_by_id(self, fake_ctx, mock_sd):
-        mock_sd.get_sla_by_id.return_value = {"id": "0", "name": "TTR"}
+        mock_sd.get_sla_by_id.return_value = {"id": "0", "name": "XXX"}
         result = await get_request_sla_by_id(fake_ctx, "0", "0")
-        assert "TTR" in result
+        assert "XXX" in result
 
     @pytest.mark.asyncio
     async def test_list_approvals(self, fake_ctx, mock_sd):

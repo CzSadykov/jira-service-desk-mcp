@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "jira-service-desk-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "MCP server for Jira Service Management — connect Claude Code, Claude Desktop, Cursor and other AI assistants to JSM"
 readme = "README.md"
 license = "MIT"

@@ -24,6 +24,7 @@ from .formatting import (
     format_organization,
     format_organization_list,
     format_participant_list,
+    format_queue_issue_list,
     format_queue_list,
     format_request_type,
     format_request_type_fields,
@@ -259,7 +260,7 @@ async def get_customer_request(ctx: Context, issue_id_or_key: str) -> str:
     """Get full details of a customer request including status, reporter, and field values.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
     """
     try:
         client = _get_client(ctx)
@@ -494,7 +495,7 @@ async def list_request_participants(
     Participants receive notifications about request updates.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
         start: Pagination offset (0-based).
         limit: Maximum number of results (default 50).
     """
@@ -518,7 +519,7 @@ async def add_request_participants(
     """Add participants to a customer request so they receive updates.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
         usernames: (Optional) Comma-separated usernames (Server/DC).
         account_ids: (Optional) Comma-separated Atlassian account IDs (Cloud).
     """
@@ -545,7 +546,7 @@ async def remove_request_participants(
     """Remove participants from a customer request.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
         usernames: (Optional) Comma-separated usernames (Server/DC).
         account_ids: (Optional) Comma-separated Atlassian account IDs (Cloud).
     """
@@ -574,7 +575,7 @@ async def list_customer_transitions(ctx: Context, issue_id_or_key: str) -> str:
     Use the returned transition IDs with ``perform_transition``.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
     """
     try:
         client = _get_client(ctx)
@@ -593,7 +594,7 @@ async def perform_transition(
     Call ``list_customer_transitions`` first to discover available transition IDs.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
         transition_id: The numeric transition ID.
         comment: (Optional) Comment to add along with the transition.
     """
@@ -859,7 +860,7 @@ async def list_issues_in_queue(
         issues = client.get_issues_in_queue(
             service_desk_id, queue_id, start=start, limit=limit
         )
-        return format_customer_request_list(issues)
+        return format_queue_issue_list(issues)
     except Exception as e:
         return _handle_error(e)
 
@@ -879,7 +880,7 @@ async def get_request_sla(
     SLA metric configured on the request.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
         start: Pagination offset (0-based).
         limit: Maximum number of results (default 50).
     """
@@ -898,7 +899,7 @@ async def get_request_sla_by_id(
     """Get a specific SLA metric by its ID for a customer request.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
         sla_id: The SLA metric ID.
     """
     try:
@@ -921,7 +922,7 @@ async def list_approvals(
     """List pending and completed approvals for a customer request.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
         start: Pagination offset (0-based).
         limit: Maximum number of results (default 50).
     """
@@ -940,7 +941,7 @@ async def get_approval(
     """Get details of a specific approval including approver decisions.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
         approval_id: The numeric approval ID.
     """
     try:
@@ -958,7 +959,7 @@ async def answer_approval(
     """Approve or decline an approval request.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
         approval_id: The numeric approval ID.
         decision: ``"approve"`` or ``"decline"``.
     """
@@ -1011,7 +1012,7 @@ async def attach_file_to_request(
     Call ``upload_temporary_attachment`` first to obtain the temporary ID.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
         temp_attachment_id: The temporary attachment ID returned by
             ``upload_temporary_attachment``.
         public: ``true`` — visible to customers; ``false`` — internal only.

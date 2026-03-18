@@ -27,6 +27,7 @@ from mcp_jira_service_desk.formatting import (
     format_comment,
     format_organization,
     format_participant,
+    format_queue_issue,
     format_queue_list,
     format_sla_list,
     format_transition_list,
@@ -210,6 +211,13 @@ class TestOnPremFormatting:
         assert "15" in result
         assert "SLA breached" in result
         assert "2" in result
+
+    def test_format_queue_issue_onprem(self, onprem_queue_issue_response):
+        result = format_queue_issue(onprem_queue_issue_response)
+        assert "X000" in result
+        assert "VPN not working" in result
+        assert "John Smith" in result
+        assert "Remote workforce" in result
 
     def test_format_sla_list(self, onprem_sla_response):
         result = format_sla_list(onprem_sla_response["values"])
@@ -421,12 +429,13 @@ class TestOnPremServiceDesk:
 
     @pytest.mark.asyncio
     async def test_list_issues_in_queue_onprem(
-        self, fake_onprem_ctx, mock_sd, onprem_request_response
+        self, fake_onprem_ctx, mock_sd, onprem_queue_issue_response
     ):
-        mock_sd.get_issues_in_queue.return_value = {"values": [onprem_request_response]}
+        mock_sd.get_issues_in_queue.return_value = {"values": [onprem_queue_issue_response]}
         result = await list_issues_in_queue(fake_onprem_ctx, "0", "0")
-        assert "0" in result
+        assert "0000" in result
         assert "VPN not working" in result
+        assert "Remote workforce" in result
 
 
 # ======================================================================

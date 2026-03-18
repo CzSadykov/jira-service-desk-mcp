@@ -170,6 +170,50 @@ def onprem_request_response():
 
 
 @pytest.fixture
+def queue_issue_response():
+    """Queue APIs return Jira issue beans, not customer request DTOs."""
+    return {
+        "id": "000000",
+        "key": "X000",
+        "fields": {
+            "summary": "My keyboard is broken",
+            "status": {"name": "Waiting for support"},
+            "reporter": {
+                "displayName": "Fred F. User",
+                "emailAddress": "fred@example.com",
+            },
+            "created": "2025-10-07T09:30:00.000+0300",
+            "priority": {"name": "High"},
+            "labels": ["vip", "hardware"],
+            "requestType": {"name": "Hardware"},
+        },
+    }
+
+
+@pytest.fixture
+def onprem_queue_issue_response():
+    """On-prem queue issues still use issue beans, with key-based users."""
+    return {
+        "id": "00000",
+        "key": "X000",
+        "fields": {
+            "summary": "VPN not working",
+            "status": {"name": "Open"},
+            "reporter": {
+                "key": "jsmith",
+                "name": "jsmith",
+                "displayName": "John Smith",
+                "emailAddress": "jsmith@corp.local",
+            },
+            "created": "2025-10-07T09:30:00.000+0300",
+            "priority": {"name": "High"},
+            "labels": ["vpn", "remote-access"],
+            "customfield_10010": {"value": "Remote workforce"},
+        },
+    }
+
+
+@pytest.fixture
 def onprem_queue_response():
     return {
         "values": [
