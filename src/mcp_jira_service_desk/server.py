@@ -290,7 +290,7 @@ async def get_customer_request_status(ctx: Context, issue_id_or_key: str) -> str
     """Get the current status and status category of a customer request.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
     """
     try:
         client = _get_client(ctx)
@@ -315,7 +315,7 @@ async def add_request_comment(
     for internal agent notes that the customer cannot see.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
         body: The comment text (plain text or Jira wiki markup).
         public: ``true`` — visible to customer; ``false`` — internal agent note.
     """
@@ -340,7 +340,7 @@ async def list_request_comments(
     """List comments on a customer request with filtering by visibility.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
         public: Include public (customer-visible) comments.
         internal: Include internal (agent-only) comments.
         start: Pagination offset (0-based).
@@ -363,7 +363,7 @@ async def get_request_comment(
     """Get a single comment by its ID.
 
     Args:
-        issue_id_or_key: The issue key (e.g. "SD-123") or numeric issue ID.
+        issue_id_or_key: The issue key (e.g. "X000") or numeric issue ID.
         comment_id: The numeric comment ID.
     """
     try:
